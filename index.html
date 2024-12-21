@@ -115,6 +115,11 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
+        .task-description {
+            font-size: 14px;
+            color: #ddd;
+        }
+
         .delete-task {
             background-color: #e53935;
             color: white;
@@ -305,7 +310,7 @@
                 sortButtonInsideList.addEventListener('click', () => {
                     if (lists[listName].tasks.length > 0) {
                         const randomTask = lists[listName].tasks[Math.floor(Math.random() * lists[listName].tasks.length)];
-                        sorteioResult.textContent = `Tarefa sorteada da lista ${listName}: ${randomTask}`;
+                        sorteioResult.textContent = `Tarefa sorteada da lista ${listName}: ${randomTask.task}`;
                         listNameResult.textContent = `Lista: ${listName}`;
                         resultContainer.style.display = 'block';
                     } else {
@@ -332,8 +337,26 @@
                     taskDiv.classList.add('task');
 
                     const taskParagraph = document.createElement('p');
-                    taskParagraph.textContent = task;
+                    taskParagraph.textContent = task.task;
                     taskDiv.appendChild(taskParagraph);
+
+                    const taskDescription = document.createElement('p');
+                    taskDescription.classList.add('task-description');
+                    taskDescription.textContent = task.description;
+                    taskDiv.appendChild(taskDescription);
+
+                    const editTaskButton = document.createElement('button');
+                    editTaskButton.textContent = 'Editar';
+                    editTaskButton.classList.add('edit-task-button');
+                    editTaskButton.addEventListener('click', () => {
+                        const newDescription = prompt('Edite a descrição da tarefa', task.description);
+                        if (newDescription !== null) {
+                            task.description = newDescription;
+                            updateFirebase();
+                            renderLists();
+                        }
+                    });
+                    taskDiv.appendChild(editTaskButton);
 
                     const deleteButton = document.createElement('button');
                     deleteButton.textContent = 'Excluir';
@@ -351,15 +374,20 @@
                 const taskInput = document.createElement('input');
                 taskInput.placeholder = 'Adicionar tarefa';
 
+                const taskDescriptionInput = document.createElement('input');
+                taskDescriptionInput.placeholder = 'Descrição da tarefa';
+
                 const addTaskButton = document.createElement('button');
                 addTaskButton.textContent = 'Adicionar Tarefa';
                 addTaskButton.classList.add('add-task-button');
                 addTaskButton.addEventListener('click', () => {
                     const task = taskInput.value.trim();
+                    const description = taskDescriptionInput.value.trim();
                     if (task) {
-                        lists[listName].tasks.push(task);
+                        lists[listName].tasks.push({ task, description });
                         updateFirebase();
                         taskInput.value = '';
+                        taskDescriptionInput.value = '';
                         renderLists();
                     }
                 });
@@ -367,6 +395,7 @@
                 const taskCreatorDiv = document.createElement('div');
                 taskCreatorDiv.classList.add('task-creator');
                 taskCreatorDiv.appendChild(taskInput);
+                taskCreatorDiv.appendChild(taskDescriptionInput);
                 taskCreatorDiv.appendChild(addTaskButton);
                 listDiv.appendChild(taskCreatorDiv);
 
@@ -411,7 +440,7 @@
 
         sortAllButton.addEventListener('click', () => {
             const allTasks = Object.entries(lists).flatMap(([listName, list]) =>
-                list.tasks.map(task => ({ task, listName })));
+                list.tasks.map(task => ({ task: task.task, listName })));
             if (allTasks.length > 0) {
                 const randomTask = allTasks[Math.floor(Math.random() * allTasks.length)];
                 sorteioResult.textContent = `Tarefa sorteada de todas as listas: ${randomTask.task}`;
@@ -424,7 +453,7 @@
 
         replayButton.addEventListener('click', () => {
             const allTasks = Object.entries(lists).flatMap(([listName, list]) =>
-                list.tasks.map(task => ({ task, listName })));
+                list.tasks.map(task => ({ task: task.task, listName })));
             if (allTasks.length > 0) {
                 const randomTask = allTasks[Math.floor(Math.random() * allTasks.length)];
                 sorteioResult.textContent = `Tarefa sorteada de todas as listas: ${randomTask.task}`;
