@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Tarefas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Estilos gerais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .list-title {
+            font-size: 20px;
+            margin-right: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        /* Estilo para os inputs e botões */
+        input, button {
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus, button:focus {
+            border-color: #6c63ff;
+        }
+
+        input {
+            background-color: #444;
+            color: #fff;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #6c63ff;
+            color: white;
+            border: none;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #5a50e1;
+        }
+
+        /* Estilo para a criação de tarefas */
+        .task-creator {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 25px;
+            align-items: stretch;
+        }
+
+        #add-list {
+            margin-top: 10px;
+        }
+
+        .list-container {
+            margin-top: 20px;
+        }
+
+        .list {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #444;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background-color: #555;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .delete-task {
+            background-color: #e53935;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .delete-task:hover {
+            background-color: #d32f2f;
+        }
+
+        .sort-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s ease;
+            margin-left: 10px;
+            width: 32px;
+            height: 32px;
+        }
+
+        .sort-button:hover {
+            background-color: #1976D2;
+        }
+
+        .sort-all-button {
+            padding: 14px 25px;
+            background-color: #FF6F61;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .sort-all-button:hover {
+            background-color: #e2584a;
+        }
+
+        .result-container {
+            padding: 20px;
+            background-color: #333;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .result-container h2 {
+            font-size: 22px;
+            color: #fff;
+        }
+
+        .result-container p {
+            font-size: 20px;
+            color: #e53935;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .replay-button {
+            padding: 12px 24px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .replay-button:hover {
+            background-color: #1976D2;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .task-creator {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            input, button {
+                font-size: 14px;
+            }
+
+            .task {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .delete-task {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+
+            .sort-all-button, .replay-button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerenciador de Tarefas</h1>
+        <div class="task-creator">
+            <input type="text" id="list-name-input" placeholder="Nome da lista">
+            <button id="add-list">Criar Lista</button>
+        </div>
+
+        <div class="list-container" id="list-container"></div>
+
+        <button id="sort-all-button" class="sort-all-button">Sortear Tarefa de Todas as Listas</button>
+
+        <div id="result-container" class="result-container">
+            <h2>Tarefa Sorteada:</h2>
+            <p id="list-name-result">Lista: Nenhuma</p>
+            <p id="sorteio-result">Nenhuma tarefa sorteada.</p>
+            <button id="replay-button" class="replay-button">Resorteio</button>
+        </div>
+    </div>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const addListButton = document.getElementById('add-list');
+        const listContainer = document.getElementById('list-container');
+        const sortAllButton = document.getElementById('sort-all-button');
+        const resultContainer = document.getElementById('result-container');
+        const sorteioResult = document.getElementById('sorteio-result');
+        const listNameResult = document.getElementById('list-name-result');
+        const replayButton = document.getElementById('replay-button');
+        const listNameInput = document.getElementById('list-name-input');
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdi0A5DcqUR3QDWImMuBViGq3rYXI45gc",
+            authDomain: "tarefas-3532e.firebaseapp.com",
+            projectId: "tarefas-3532e",
+            storageBucket: "tarefas-3532e.firebasestorage.app",
+            messagingSenderId: "1000876350589",
+            appId: "1:1000876350589:web:605847e16ced6c5d62e514"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const db = getFirestore(app);
+
+        let lists = {};
+
+        // Função para renderizar as listas e também atualizar no Firebase
+        function renderLists() {
+            listContainer.innerHTML = '';
+            let listIndex = 0;
+
+            Object.keys(lists).forEach(listName => {
+                const listDiv = document.createElement('div');
+                listDiv.classList.add('list');
+                listDiv.classList.add(`list-${listIndex + 1}`);
+
+                const listTitle = document.createElement('div');
+                listTitle.classList.add('list-title');
+                listTitle.textContent = listName;
+
+                const sortButtonInsideList = document.createElement('button');
+                sortButtonInsideList.innerHTML = '<i class="fas fa-random"></i>';
+                sortButtonInsideList.classList.add('sort-button');
+                sortButtonInsideList.addEventListener('click', () => {
+                    if (lists[listName].tasks.length > 0) {
+                        const randomTask = lists[listName].tasks[Math.floor(Math.random() * lists[listName].tasks.length)];
+                        sorteioResult.textContent = `Tarefa sorteada da lista ${listName}: ${randomTask}`;
+                        listNameResult.textContent = `Lista: ${listName}`;
+                        resultContainer.style.display = 'block';
+                    } else {
+                        alert(`Não há tarefas na lista ${listName}`);
+                    }
+                });
+                listTitle.appendChild(sortButtonInsideList);
+
+                const deleteListButton = document.createElement('button');
+                deleteListButton.textContent = 'Excluir Lista';
+                deleteListButton.style.marginLeft = '10px';
+                deleteListButton.addEventListener('click', () => {
+                    delete lists[listName];
+                    updateFirebase();
+                    renderLists();
+                });
+                listTitle.appendChild(deleteListButton);
+
+                listDiv.appendChild(listTitle);
+
+                const taskList = document.createElement('div');
+                lists[listName].tasks.forEach((task, index) => {
+                    const taskDiv = document.createElement('div');
+                    taskDiv.classList.add('task');
+
+                    const taskParagraph = document.createElement('p');
+                    taskParagraph.textContent = task;
+                    taskDiv.appendChild(taskParagraph);
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Excluir';
+                    deleteButton.classList.add('delete-task');
+                    deleteButton.addEventListener('click', () => {
+                        lists[listName].tasks.splice(index, 1);
+                        updateFirebase();
+                        renderLists();
+                    });
+                    taskDiv.appendChild(deleteButton);
+
+                    taskList.appendChild(taskDiv);
+                });
+
+                const taskInput = document.createElement('input');
+                taskInput.placeholder = 'Adicionar tarefa';
+
+                const addTaskButton = document.createElement('button');
+                addTaskButton.textContent = 'Adicionar Tarefa';
+                addTaskButton.classList.add('add-task-button');
+                addTaskButton.addEventListener('click', () => {
+                    const task = taskInput.value.trim();
+                    if (task) {
+                        lists[listName].tasks.push(task);
+                        updateFirebase();
+                        taskInput.value = '';
+                        renderLists();
+                    }
+                });
+
+                const taskCreatorDiv = document.createElement('div');
+                taskCreatorDiv.classList.add('task-creator');
+                taskCreatorDiv.appendChild(taskInput);
+                taskCreatorDiv.appendChild(addTaskButton);
+                listDiv.appendChild(taskCreatorDiv);
+
+                listDiv.appendChild(taskList);
+                listContainer.appendChild(listDiv);
+
+                listIndex++;
+            });
+        }
+
+        function updateFirebase() {
+            const listsRef = ref(database, 'lists');
+            set(listsRef, lists); // Salva as listas no Firebase
+        }
+
+        // Carregar as listas do Firebase
+        function loadListsFromFirebase() {
+            const listsRef = ref(database, 'lists');
+        
+            // Usando get() para obter os dados
+            get(listsRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    lists = snapshot.val() || {}; // Se não houver listas, inicializa como objeto vazio
+                    renderLists();
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error("Error getting data: ", error);
+            });
+        }
+
+        addListButton.addEventListener('click', () => {
+            const listName = listNameInput.value.trim();
+            if (listName && !lists[listName]) {
+                lists[listName] = { tasks: [] };
+                listNameInput.value = '';
+                updateFirebase();
+                renderLists();
+            }
+        });
+
+        sortAllButton.addEventListener('click', () => {
+            const allTasks = Object.entries(lists).flatMap(([listName, list]) =>
+                list.tasks.map(task => ({ task, listName })));
+            if (allTasks.length > 0) {
+                const randomTask = allTasks[Math.floor(Math.random() * allTasks.length)];
+                sorteioResult.textContent = `Tarefa sorteada de todas as listas: ${randomTask.task}`;
+                listNameResult.textContent = `Lista: ${randomTask.listName}`;
+                resultContainer.style.display = 'block';
+            } else {
+                alert('Não há tarefas em nenhuma lista.');
+            }
+        });
+
+        replayButton.addEventListener('click', () => {
+            const allTasks = Object.entries(lists).flatMap(([listName, list]) =>
+                list.tasks.map(task => ({ task, listName })));
+            if (allTasks.length > 0) {
+                const randomTask = allTasks[Math.floor(Math.random() * allTasks.length)];
+                sorteioResult.textContent = `Tarefa sorteada de todas as listas: ${randomTask.task}`;
+                listNameResult.textContent = `Lista: ${randomTask.listName}`;
+            } else {
+                alert('Não há tarefas para resorteio.');
+            }
+        });
+
+        // Carregar as listas quando a página for carregada
+        loadListsFromFirebase();
+    });
+    </script>
+</body>
+</html>
