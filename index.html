@@ -382,16 +382,24 @@ function loginUser() {
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
 
-    signInWithPopup(auth, provider)
-        .then((result) => {
-            const user = result.user;
-            console.log("Usuário logado com Google:", user);
-            loadTasks(user.uid); // Carregar tarefas do usuário
-        })
-        .catch((error) => {
-            console.error("Erro ao fazer login com Google:", error.message);
-        });
+    // Verifica se o popup pode ser aberto
+    const canPopupOpen = window.open('', '', 'width=1,height=1,left=-1000,top=-1000');
+
+    if (canPopupOpen) {
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const user = result.user;
+                console.log("Usuário logado com Google:", user);
+                loadTasks(user.uid); // Carregar tarefas do usuário
+            })
+            .catch((error) => {
+                console.error("Erro ao fazer login com Google:", error.message);
+            });
+    } else {
+        alert("O navegador bloqueou popups. Por favor, permita popups para autenticação.");
+    }
 }
+
 
 
 addTask.addEventListener('click', () => {
@@ -442,7 +450,9 @@ function createTask() {
         time: newTime
     };
 
-    const tasksRef = ref(database, 'tasks');
+    const user = auth.currentUser;  // Obtenha o usuário logado
+    const tasksRef = ref(database, `tasks/${user.uid}`);  // Use o UID do usuário
+
     
     // Adiciona a nova tarefa usando a função push
     push(tasksRef, task); // Adiciona a nova tarefa ao Firebase
@@ -477,8 +487,8 @@ function editTask(taskId) {
     task.tags = newTags.split(',').map(tag => tag.trim());
     task.time = newTime;
 
-    const taskRef = ref(database, 'tasks/' + taskId);
-    set(taskRef, task); // Atualiza a tarefa no Firebase
+    const user = auth.currentUser;  // Obtenha o usuário logado
+    const taskRef = ref(database, `tasks/${user.uid}/${taskId}`);  // Atualize a tarefa no caminho específico do usuário
 
     loadTasks(); // Recarrega as tarefas
 }
@@ -524,7 +534,9 @@ function updateTagFilter(tasksData) {
 function loadTasks() {
     tasksContainer.innerHTML = '';  // Limpa o conteúdo atual da tela
 
-    const tasksRef = ref(database, 'tasks');
+    const user = auth.currentUser;  // Obtenha o usuário logado
+    const tasksRef = ref(database, `tasks/${user.uid}`);  // Carregue as tarefas do usuário
+
     get(tasksRef).then((snapshot) => {
         const data = snapshot.val(); // Obtém os dados do Firebase
 
@@ -665,7 +677,9 @@ function drawTask() {
 }
 
 function removeTask(taskId) {
-    const taskRef = ref(database, 'tasks/' + taskId);
+    const user = auth.currentUser;  // Obtenha o usuário logado
+    const taskRef = ref(database, `tasks/${user.uid}/${taskId}`);  // Referência para a tarefa dentro do nó do usuário
+
 
     // Remove task
     remove(taskRef)
