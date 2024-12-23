@@ -463,6 +463,7 @@ function createTask() {
 
 function editTask(taskId) {
     const task = tasks.find(task => task.id === taskId);
+
     var newTitle = prompt('Qual é o novo título?', task.title);
     if (newTitle === null || newTitle.trim() === '') {
         newTitle = task.title;
@@ -483,16 +484,31 @@ function editTask(taskId) {
         newTime = task.time;
     }
 
+    // Atualiza localmente a tarefa
     task.title = newTitle;
     task.description = newDescription;
     task.tags = newTags.split(',').map(tag => tag.trim());
     task.time = newTime;
 
-    const user = auth.currentUser;  // Obtenha o usuário logado
-    const taskRef = ref(database, `tasks/${user.uid}/${taskId}`);  // Atualize a tarefa no caminho específico do usuário
+    const user = auth.currentUser; // Obtenha o usuário logado
+    if (!user) {
+        console.error("Usuário não está logado!");
+        return;
+    }
 
-    loadTasks(); // Recarrega as tarefas
+    const taskRef = ref(database, `tasks/${user.uid}/${taskId}`);
+
+    // Atualiza no Firebase
+    set(taskRef, task)
+        .then(() => {
+            console.log("Tarefa atualizada com sucesso.");
+            loadTasks(); // Recarrega as tarefas
+        })
+        .catch((error) => {
+            console.error("Erro ao atualizar a tarefa:", error);
+        });
 }
+
 
 function updateTagFilter(tasksData) {
     // Limpa o filtro de tags
