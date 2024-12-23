@@ -531,6 +531,7 @@ function updateTagFilter(tasksData) {
         checkbox.id = 'tag_' + tag;
         checkbox.value = tag;
         checkbox.checked = true; // Inicia marcado
+        checkbox.style.display = 'none';
 
         // Adiciona o evento de mudança ao checkbox
         checkbox.addEventListener('change', () => {
