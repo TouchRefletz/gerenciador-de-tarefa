@@ -536,10 +536,10 @@ function updateTagFilter(tasksData) {
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
                 selectedTags.add(tag);
-                label.style.backgroundColor = '#d1c4e9'; // Roxo mais claro (ativo)
+                label.style.backgroundColor = '#3700b3'; // Roxo mais claro (ativo)
             } else {
                 selectedTags.delete(tag);
-                label.style.backgroundColor = '#bbdefb'; // Azul mais claro (inativo)
+                label.style.backgroundColor = '#6200ea'; // Azul mais claro (inativo)
             }
         });
 
@@ -548,7 +548,7 @@ function updateTagFilter(tasksData) {
         label.setAttribute('for', 'tag_' + tag);
         label.innerHTML = tag;
         label.style.cursor = 'pointer'; // Aparência de botão
-        label.style.backgroundColor = '#d1c4e9'; // Roxo mais claro (ativo)
+        label.style.backgroundColor = '#3700b3'; // Roxo mais claro (ativo)
         label.style.padding = '5px 10px';
         label.style.margin = '5px';
         label.style.borderRadius = '5px';
