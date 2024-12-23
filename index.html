@@ -523,50 +523,44 @@ function updateTagFilter(tasksData) {
         task.tags.forEach(tag => allTags.add(tag)); // Adiciona as tags ao Set
     });
 
-    // Cria checkboxes ocultos e labels clicáveis para todas as tags únicas
+    // Cria checkboxes para todas as tags únicas
     allTags.forEach(tag => {
+        // Criação do checkbox
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.id = 'tag_' + tag;
         checkbox.value = tag;
-        checkbox.checked = true; // Define como selecionado por padrão
-        checkbox.style.display = 'none'; // Oculta o checkbox
+        checkbox.checked = true; // Inicia marcado
+        checkbox.style.display = 'none'; // Torna invisível
 
-        // Adiciona a tag ao conjunto selectedTags por padrão
-        selectedTags.add(tag);
-
+        // Criação do label
         var label = document.createElement('label');
         label.setAttribute('for', 'tag_' + tag);
         label.innerHTML = tag;
+        label.style.cursor = 'pointer'; // Aparência de botão
+        label.style.backgroundColor = '#d1c4e9'; // Roxo mais claro (ativo)
+        label.style.padding = '5px 10px';
+        label.style.margin = '5px';
+        label.style.borderRadius = '5px';
+        label.style.display = 'inline-block';
 
-        // Alterna a seleção ao clicar no label
-        checkbox.addEventListener('change', () => {
-            if (checkbox.checked) {
-                selectedTags.add(tag);
-            } else {
-                selectedTags.delete(tag);
-            }
-        });
-
-        checkbox.addEventListener('change', () => {
-            if (checkbox.checked) {
-                selectedTags.add(tag);
-                label.style.backgroundColor = '#3700b3'; // Alteração visual para "selecionado"
-            } else {
-                selectedTags.delete(tag);
-                label.style.backgroundColor = '#117ae7'; // Alteração visual para "não selecionado"
-            }
-        });
-
+        // Evento de clique no label
         label.addEventListener('click', () => {
-            checkbox.checked = !checkbox.checked; // Altera o estado do checkbox
-            checkbox.dispatchEvent(new Event('change')); // Dispara o evento de mudança
+            checkbox.checked = !checkbox.checked; // Alterna o estado do checkbox
+            if (checkbox.checked) {
+                label.style.backgroundColor = '#d1c4e9'; // Roxo mais claro (ativo)
+                selectedTags.add(tag);
+            } else {
+                label.style.backgroundColor = '#bbdefb'; // Azul mais claro (inativo)
+                selectedTags.delete(tag);
+            }
         });
 
         tagFilterContainer.appendChild(checkbox);
         tagFilterContainer.appendChild(label);
     });
 }
+
 
 
 // Dentro da função loadTasks (ou onde você estiver recuperando os dados do Firebase)
