@@ -631,17 +631,44 @@ function drawTask() {
 
     var task = availableTasks[Math.floor(Math.random() * availableTasks.length)];
     raffleCount++;
+
+    // Campo de edição para descrição
     raffleResult.innerHTML = `
     <strong>Tarefa Sorteada:</strong>
-    <p>${task.title}</p>
-    <p>${task.description}</p>
+    <p><strong>${task.title}</strong></p>
+    <textarea id="editableDescription" rows="4">${task.description}</textarea>
     <p id="timer">Tempo restante: ${task.time} min</p>
     <p>Quantidade de sorteios: ${raffleCount}</p>
     `;
-    raffleModal.classList.add('show');
 
+    // Botão para salvar alterações
+    var saveButton = document.createElement('button');
+    saveButton.innerHTML = 'Salvar Alterações';
+    saveButton.addEventListener('click', () => {
+        var updatedDescription = document.getElementById('editableDescription').value.trim();
+        if (updatedDescription === '') {
+            alert("A descrição não pode ser vazia!");
+            return;
+        }
+        task.description = updatedDescription;
+
+        // Atualiza a descrição no Firebase
+        const user = auth.currentUser;
+        const taskRef = ref(database, `tasks/${user.uid}/${task.id}`);
+        set(taskRef, task).then(() => {
+            alert("Descrição atualizada com sucesso!");
+            loadTasks(); // Atualiza a lista de tarefas
+        }).catch((error) => {
+            console.error("Erro ao atualizar a descrição: ", error);
+        });
+    });
+
+    raffleResult.appendChild(saveButton);
+
+    // Modal e timer
+    raffleModal.classList.add('show');
     var timerElement = document.getElementById('timer');
-    var timeRemaining = task.time * 60; // Tempo em segundos
+    var timeRemaining = task.time * 60;
     var timerInterval;
 
     function startTimer() {
@@ -657,11 +684,12 @@ function drawTask() {
             }
         }, 1000);
     }
+
     // Iniciar o temporizador ao exibir a tarefa
     startTimer();
     var toggleButton = document.createElement('button');
     toggleButton.innerHTML = 'Pausar';
-    var isPaused = false; // Variável para controlar o estado de pausa
+    var isPaused = false;
 
     toggleButton.addEventListener('click', function() {
         if (isPaused) {
@@ -671,7 +699,7 @@ function drawTask() {
             clearInterval(timerInterval);
             toggleButton.innerHTML = 'Retomar';
         }
-        isPaused = !isPaused; // Alterna o estado
+        isPaused = !isPaused;
     });
 
     raffleResult.appendChild(toggleButton);
