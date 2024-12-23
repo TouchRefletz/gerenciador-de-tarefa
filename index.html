@@ -539,23 +539,12 @@ function updateTagFilter(tasksData) {
         label.setAttribute('for', 'tag_' + tag);
         label.innerHTML = tag;
 
-        // Estiliza o label para parecer interativo
-        label.style.cursor = 'pointer';
-        label.style.margin = '5px';
-        label.style.padding = '5px 10px';
-        label.style.border = '1px solid #ccc';
-        label.style.borderRadius = '5px';
-        label.style.backgroundColor = '#f9f9f9';
-        label.style.userSelect = 'none';
-
         // Alterna a seleção ao clicar no label
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
                 selectedTags.add(tag);
-                label.style.backgroundColor = '#d1e7dd'; // Alteração visual para "selecionado"
             } else {
                 selectedTags.delete(tag);
-                label.style.backgroundColor = '#f9f9f9'; // Alteração visual para "não selecionado"
             }
         });
 
