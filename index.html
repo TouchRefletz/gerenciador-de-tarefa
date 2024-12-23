@@ -531,7 +531,17 @@ function updateTagFilter(tasksData) {
         checkbox.id = 'tag_' + tag;
         checkbox.value = tag;
         checkbox.checked = true; // Inicia marcado
-        
+
+        // Adiciona o evento de mudança ao checkbox
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                selectedTags.add(tag);
+                label.style.backgroundColor = '#d1c4e9'; // Roxo mais claro (ativo)
+            } else {
+                selectedTags.delete(tag);
+                label.style.backgroundColor = '#bbdefb'; // Azul mais claro (inativo)
+            }
+        });
 
         // Criação do label
         var label = document.createElement('label');
@@ -544,22 +554,11 @@ function updateTagFilter(tasksData) {
         label.style.borderRadius = '5px';
         label.style.display = 'inline-block';
 
-        // Evento de clique no label
-        label.addEventListener('click', () => {
-            checkbox.checked = !checkbox.checked; // Alterna o estado do checkbox
-            if (checkbox.checked) {
-                label.style.backgroundColor = '#d1c4e9'; // Roxo mais claro (ativo)
-                selectedTags.add(tag);
-            } else {
-                label.style.backgroundColor = '#bbdefb'; // Azul mais claro (inativo)
-                selectedTags.delete(tag);
-            }
-        });
-
         tagFilterContainer.appendChild(checkbox);
         tagFilterContainer.appendChild(label);
     });
 }
+
 
 
 
