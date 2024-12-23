@@ -519,33 +519,56 @@ function updateTagFilter(tasksData) {
 
     // Itera sobre as tarefas e coleta as tags
     Object.keys(tasksData).forEach(key => {
-        let task = tasksData[key];  // Obtém a tarefa do Firebase usando a chave
-        task.tags.forEach(tag => allTags.add(tag));  // Adiciona as tags ao Set
+        let task = tasksData[key]; // Obtém a tarefa do Firebase usando a chave
+        task.tags.forEach(tag => allTags.add(tag)); // Adiciona as tags ao Set
     });
 
-    // Cria checkboxes para todas as tags únicas
+    // Cria checkboxes ocultos e labels clicáveis para todas as tags únicas
     allTags.forEach(tag => {
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.id = 'tag_' + tag;
         checkbox.value = tag;
+        checkbox.checked = true; // Define como selecionado por padrão
+        checkbox.style.display = 'none'; // Oculta o checkbox
+
+        // Adiciona a tag ao conjunto selectedTags por padrão
+        selectedTags.add(tag);
 
         var label = document.createElement('label');
         label.setAttribute('for', 'tag_' + tag);
         label.innerHTML = tag;
 
+        // Estiliza o label para parecer interativo
+        label.style.cursor = 'pointer';
+        label.style.margin = '5px';
+        label.style.padding = '5px 10px';
+        label.style.border = '1px solid #ccc';
+        label.style.borderRadius = '5px';
+        label.style.backgroundColor = '#f9f9f9';
+        label.style.userSelect = 'none';
+
+        // Alterna a seleção ao clicar no label
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
                 selectedTags.add(tag);
+                label.style.backgroundColor = '#d1e7dd'; // Alteração visual para "selecionado"
             } else {
                 selectedTags.delete(tag);
+                label.style.backgroundColor = '#f9f9f9'; // Alteração visual para "não selecionado"
             }
+        });
+
+        label.addEventListener('click', () => {
+            checkbox.checked = !checkbox.checked; // Altera o estado do checkbox
+            checkbox.dispatchEvent(new Event('change')); // Dispara o evento de mudança
         });
 
         tagFilterContainer.appendChild(checkbox);
         tagFilterContainer.appendChild(label);
     });
 }
+
 
 // Dentro da função loadTasks (ou onde você estiver recuperando os dados do Firebase)
 function loadTasks() {
