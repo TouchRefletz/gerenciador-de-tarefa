@@ -548,6 +548,16 @@ function updateTagFilter(tasksData) {
             }
         });
 
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                selectedTags.add(tag);
+                label.style.backgroundColor = '#3700b3'; // Alteração visual para "selecionado"
+            } else {
+                selectedTags.delete(tag);
+                label.style.backgroundColor = '#117ae7'; // Alteração visual para "não selecionado"
+            }
+        });
+
         label.addEventListener('click', () => {
             checkbox.checked = !checkbox.checked; // Altera o estado do checkbox
             checkbox.dispatchEvent(new Event('change')); // Dispara o evento de mudança
