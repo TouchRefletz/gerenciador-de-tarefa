@@ -696,44 +696,7 @@ function drawTask() {
 
     raffleResult.appendChild(saveButton);
 
-    // Modal e timer
     raffleModal.classList.add('show');
-    var timerElement = document.getElementById('timer');
-    var timeRemaining = task.time * 60;
-    var timerInterval;
-
-    function startTimer() {
-        timerInterval = setInterval(function() {
-            if (timeRemaining <= 0) {
-                clearInterval(timerInterval);
-                alert("Tempo esgotado!");
-            } else {
-                timeRemaining--;
-                var minutes = Math.floor(timeRemaining / 60);
-                var seconds = timeRemaining % 60;
-                timerElement.innerHTML = `Tempo restante: ${minutes}m ${seconds}s`;
-            }
-        }, 1000);
-    }
-
-    // Iniciar o temporizador ao exibir a tarefa
-    startTimer();
-    var toggleButton = document.createElement('button');
-    toggleButton.innerHTML = 'Pausar';
-    var isPaused = false;
-
-    toggleButton.addEventListener('click', function() {
-        if (isPaused) {
-            startTimer();
-            toggleButton.innerHTML = 'Pausar';
-        } else {
-            clearInterval(timerInterval);
-            toggleButton.innerHTML = 'Retomar';
-        }
-        isPaused = !isPaused;
-    });
-
-    raffleResult.appendChild(toggleButton);
 }
 
 function removeTask(taskId) {
